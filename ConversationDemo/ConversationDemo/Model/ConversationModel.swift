@@ -23,6 +23,7 @@ class ConversationMessage: MessageProtocol {
     private var messageReceiver: PersonProtocol
     private var messageContent: String
     private var messageCreationDate: Date
+    private var selectionState: Bool
 
     var fromPerson: PersonProtocol {
         return messageSender
@@ -55,14 +56,15 @@ class ConversationMessage: MessageProtocol {
         self.messageReceiver = receiver
         self.messageContent = content
         self.messageCreationDate = Date()
+        selectionState = false
     }
 
 }
 
-class MessageModel {
+class ConversationModel {
     let conversationObject: ConversationObject
-
     var messages: [MessageProtocol]!
+    private lazy var selectedMessages = [IndexPath: MessageProtocol]()
 
     init(conversation: ConversationObject) {
         self.conversationObject = conversation
@@ -71,13 +73,26 @@ class MessageModel {
     }
 
     private func loadMessages() {
-        if let messageList = PersistantStorageManager.shared.fetchMessagesForConversation(conversationObject) {
+        if let messageList = PersistentStorageManager.shared.fetchMessagesForConversation(conversationObject) {
             messages = messageList
         }
     }
 
     var numberOfMessages: Int {
         return messages.count
+    }
+
+    func isMessageSelected(atIndexPath indexPath: IndexPath) -> Bool{
+        return selectedMessages.keys.contains(indexPath)
+    }
+
+    func toggleMessageSelection(atIndexPath indexPath: IndexPath) {
+        let isSelected = selectedMessages.keys.contains(indexPath)
+        if isSelected {
+            deselectMessage(atIndexPath: indexPath)
+        } else {
+            selectMessage(atIndexPath: indexPath)
+        }
     }
 
     func messageAtIndex(_ index: Int) -> MessageProtocol {
@@ -88,18 +103,34 @@ class MessageModel {
         
     }
 
+    private func selectMessage(atIndexPath indexPath: IndexPath) {
+        selectedMessages[indexPath] = messageAtIndex(indexPath.row)
+    }
+
+    private func deselectMessage(atIndexPath indexPath: IndexPath) {
+        selectedMessages.removeValue(forKey: indexPath)
+    }
+
     func addMessage(_ message: MessageProtocol) {
-        PersistantStorageManager.shared.addMessage(message)
+        PersistentStorageManager.shared.addMessage(message)
         messages.insert(message, at: 0)
     }
 
     func deleteMessage(atIndexPath indexPath: IndexPath) {
-        PersistantStorageManager.shared.deleteMessage(messages[indexPath.row])
+        PersistentStorageManager.shared.deleteMessage(messages[indexPath.row])
         messages.remove(at: indexPath.row)
     }
 
-    func deleteMessages(atIndexPaths indexPaths: [IndexPath]) {
-        
+    func deleteSelectedMessages() {
+        let selectedIndices = selectedMessages.compactMap { $0.key.row }
+        let messages = selectedMessages.compactMap { $1 }
+        messages.forEach {
+            PersistentStorageManager.shared.deleteMessage($0)
+        }
+        selectedIndices.forEach {
+            self.messages.remove(at: $0)
+        }
+        selectedMessages.removeAll()
     }
 
     var lastItemIndex: Int {
@@ -108,6 +139,14 @@ class MessageModel {
 
     func reload() {
         loadMessages()
+    }
+
+    var hasSelections: Bool {
+        return !selectedMessages.isEmpty
+    }
+
+    var indexPathsForSelectedMessages: [IndexPath] {
+        return selectedMessages.compactMap { $0.key }
     }
 
 }

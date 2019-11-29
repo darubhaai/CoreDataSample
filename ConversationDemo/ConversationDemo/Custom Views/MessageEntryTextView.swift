@@ -21,6 +21,7 @@ fileprivate let placeholderPadding = UIEdgeInsets(top: 8, left: 6, bottom: 0, ri
             placeHolderTextLabel?.text = placeholderText
         }
     }
+
     @IBInspectable var placeholderTextColor: UIColor = .gray {
         didSet {
             placeHolderTextLabel?.textColor = placeholderTextColor

@@ -8,6 +8,11 @@
 
 import UIKit
 
+extension String {
+    static let messageDeletionAlertTitle = "Are you sure you want to delete the selected messages?"
+    static let messageDeletionAlertMessage = "Deleting messages will delete them from the conversation on both sides"
+}
+
 class ConversationViewController: UIViewController {
 
     @IBOutlet weak var topDescriptionLabel: UILabel!
@@ -15,11 +20,24 @@ class ConversationViewController: UIViewController {
     @IBOutlet weak var messageEntryTextView: MessageEntryTextView!
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var chatControlStackBottomConstraint: NSLayoutConstraint!
+    
+    private var cancelButton: UIBarButtonItem?
+    private var deleteButton: UIBarButtonItem?
+    private var singleTapGestureRecogniser: UITapGestureRecognizer?
+    private var longTapGestureRecogniser: UILongPressGestureRecognizer?
 
-    private var cancelButton: UIBarButtonItem!
+    private var isSelectionModeOn = false {
+        didSet {
+            messagesTableView.allowsMultipleSelection = self.isSelectionModeOn
+            messagesTableView.allowsSelection = self.isSelectionModeOn
+            longTapGestureRecogniser?.isEnabled = !self.isSelectionModeOn
+            singleTapGestureRecogniser?.isEnabled = self.isSelectionModeOn
+            setMessageDeleteButtonEnabled(self.isSelectionModeOn)
+        }
+    }
 
     var conversationObject: ConversationObject!
-    var messageModel: MessageModel!
+    var messageModel: ConversationModel!
 
     // MARK: -
     // MARK: View Life Cycle
@@ -28,19 +46,23 @@ class ConversationViewController: UIViewController {
         super.viewDidLoad()
         configureMessageModel()
         configureMessageEntryTextView()
-        configureCancelButton()
         messagesTableView.configureForReverseScrolling()
+        addGestureRecognizers()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        topDescriptionLabel.text = "\(conversationObject.fromPerson.title) to \(conversationObject.toPerson.title)"
+        topDescriptionLabel.text = "\(conversationObject.fromPerson.firstName) to \(conversationObject.toPerson.firstName)"
         addObservers()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         removeObservers()
+    }
+
+    deinit {
+        print("=== \(#file) Deallocated")
     }
 
     // MARK: -
@@ -55,6 +77,16 @@ class ConversationViewController: UIViewController {
     // MARK: -
     // MARK: Private Methods
     // MARK: -
+
+    private func addGestureRecognizers() {
+        longTapGestureRecogniser = UILongPressGestureRecognizer(target: self, action: .longTappedOnMessage)
+        messagesTableView.addGestureRecognizer(longTapGestureRecogniser!)
+
+        singleTapGestureRecogniser = UITapGestureRecognizer(target: self, action: .singleTappedOnMessage)
+        singleTapGestureRecogniser?.isEnabled = false
+        messagesTableView.addGestureRecognizer(singleTapGestureRecogniser!)
+    }
+
     private func addObservers() {
         NotificationCenter.default.addObserver(self, selector: .keyboardWillShow, name: UIResponder.keyboardWillShowNotification, object: nil)
     }
@@ -67,23 +99,62 @@ class ConversationViewController: UIViewController {
         messageEntryTextView.text = "Type a message"
     }
 
-    @objc private func cancelButtonTapped() {
-        messageEntryTextView.resignFirstResponder()
-        cancelButton.isEnabled = false
+    @objc fileprivate func deleteButtonTapped() {
+        let alertController = UIAlertController(title: .messageDeletionAlertTitle, message: .messageDeletionAlertMessage, preferredStyle: .alert)
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { [weak self] (_) in
+            self?.deleteSelectedMessages()
+        }
 
-        UIView.animate(withDuration: 0.3) { [weak self] in
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(deleteAction)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
+    }
+
+    @objc fileprivate func cancelButtonTapped() {
+        messageEntryTextView.resignFirstResponder()
+        messageEntryTextView.showsPlaceholderText = messageEntryTextView.text.isEmpty
+        setKeyboardDismissButtonEnabled(false)
+        UIView.animate(withDuration: 0.5) { [weak self] in
             self?.chatControlStackBottomConstraint.constant = 20
         }
     }
 
-    // MARK: -
-    // MARK: Private Methods
-    // MARK: -
+    /// Animating text field position with keyboard
+    func setKeyboardDismissButtonEnabled(_ isEnabled: Bool) {
+        if isEnabled {
+            cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: .cancelButtonTapped)
+            var buttons = [cancelButton!]
+            if let _ = deleteButton {
+                buttons.append(deleteButton!)
+            }
+            navigationItem.setRightBarButtonItems(buttons, animated: true)
+        } else {
+            navigationItem.rightBarButtonItems?.removeFirst()
+            cancelButton = nil
+        }
+    }
+
+    func setMessageDeleteButtonEnabled(_ isEnabled: Bool) {
+        if isEnabled {
+            deleteButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: .deleteButtonTapped)
+            deleteButton?.tintColor  = .red
+            var buttons = [deleteButton!]
+            if let _ = cancelButton {
+                buttons.insert(cancelButton!, at: 0)
+            }
+            navigationItem.setRightBarButtonItems(buttons, animated: true)
+        } else {
+            navigationItem.rightBarButtonItems?.removeLast()
+            deleteButton = nil
+        }
+    }
+
     private func showTextFieldAboveKeyboardWithInfoFrom(notification: Notification) {
         let userInfo = notification.userInfo!
         guard let keyboardFrame = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue else { return }
         guard let animationDurarion = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval else { return }
-        let changeInHeight = keyboardFrame.height + 20
+        let changeInHeight = keyboardFrame.height + 40
         UIView.animate(withDuration: animationDurarion, animations: { [weak self] in
             self?.chatControlStackBottomConstraint.constant += changeInHeight
         })
@@ -93,14 +164,8 @@ class ConversationViewController: UIViewController {
         showTextFieldAboveKeyboardWithInfoFrom(notification: notification)
     }
 
-    private func configureCancelButton() {
-        cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
-        cancelButton.isEnabled = false
-        navigationItem.rightBarButtonItem = cancelButton
-    }
-
     private func configureMessageModel() {
-        messageModel = MessageModel(conversation: conversationObject)
+        messageModel = ConversationModel(conversation: conversationObject)
     }
 
     private func configureMessageEntryTextView() {
@@ -128,8 +193,40 @@ class ConversationViewController: UIViewController {
         clearTextView()
     }
 
-    private func deleteMessage(atIndexPath indexPath: IndexPath) {
-        messageModel.
+    private func deleteSelectedMessages() {
+        isSelectionModeOn = false
+        let selectedIndexPaths = messageModel.indexPathsForSelectedMessages
+        if !selectedIndexPaths.isEmpty {
+            messageModel.deleteSelectedMessages()
+            messagesTableView.deleteRows(at: selectedIndexPaths, with: .fade)
+        }
+    }
+
+    private func didSelectMessage(atIndexPath indexPath: IndexPath) {
+        messageModel.toggleMessageSelection(atIndexPath: indexPath)
+        let cell = messagesTableView.cellForRow(at: indexPath) as? ConversationTableViewCell
+        let isSelected = messageModel.isMessageSelected(atIndexPath: indexPath)
+        cell?.setShowSelectionOverlay(isSelected)
+        isSelectionModeOn = messageModel.hasSelections
+    }
+
+    @objc func singleTapGestureDetected(sender: UITapGestureRecognizer) {
+        if sender.state == .ended {
+            let touchPoint = sender.location(in: messagesTableView)
+            if let indexPath = messagesTableView.indexPathForRow(at: touchPoint) {
+                didSelectMessage(atIndexPath: indexPath)
+            }
+        }
+    }
+
+    @objc func longtapGestureDetected(_ sender: UILongPressGestureRecognizer) {
+        if sender.state == .began {
+            let touchPoint = sender.location(in: messagesTableView)
+            debugPrint("==== Long Tapped at\(touchPoint)...")
+            if let indexPath = messagesTableView.indexPathForRow(at: touchPoint) {
+                didSelectMessage(atIndexPath: indexPath)
+            }
+        }
     }
 
     // MARK: -
@@ -160,22 +257,11 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
         let defaultCell = UITableViewCell()
         let cell = tableView.dequeueReusableCell(withIdentifier: "ConversationTableViewCell", for: indexPath) as? ConversationTableViewCell
         let message = messageModel.messageAtIndex(indexPath.row)
-        cell?.configureWith(message: message, position: message.fromPerson.number == conversationObject.fromPerson.number ? .right : .left)
+        cell?.configureWith(message: message,
+                            position: message.fromPerson.mobile == conversationObject.fromPerson.mobile ? .right : .left,
+                            isSelected: messageModel.isMessageSelected(atIndexPath: indexPath))
         cell?.configureForReverseScrolling()
         return cell ?? defaultCell
-    }
-
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        switch editingStyle {
-        case .delete:
-            deleteMessage(atIndexPath: indexPath)
-        default:
-            break
-        }
     }
 }
 
@@ -184,7 +270,7 @@ extension ConversationViewController: UITableViewDelegate, UITableViewDataSource
 // MARK: -
 extension ConversationViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
-        cancelButton.isEnabled = true
+        setKeyboardDismissButtonEnabled(true)
         messageEntryTextView.showsPlaceholderText = false
     }
 
@@ -197,4 +283,8 @@ extension ConversationViewController: UITextViewDelegate {
 
 fileprivate extension Selector {
     static let keyboardWillShow = #selector(ConversationViewController.keyboardWillShow(_:))
+    static let singleTappedOnMessage = #selector(ConversationViewController.singleTapGestureDetected)
+    static let longTappedOnMessage = #selector(ConversationViewController.longtapGestureDetected)
+    static let cancelButtonTapped = #selector(ConversationViewController.cancelButtonTapped)
+    static let deleteButtonTapped = #selector(ConversationViewController.deleteButtonTapped)
 }

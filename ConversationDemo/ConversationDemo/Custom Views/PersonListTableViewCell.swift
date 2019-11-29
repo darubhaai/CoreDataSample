@@ -10,6 +10,7 @@ import UIKit
 
 class PersonListTableViewCell: UITableViewCell {
 
+    @IBOutlet weak var personMobileNumberLabel: UILabel!
     @IBOutlet weak var personNameLabel: UILabel!
 
     override func awakeFromNib() {
@@ -18,7 +19,9 @@ class PersonListTableViewCell: UITableViewCell {
     }
 
     func configureForPerson(_ person: PersonProtocol) {
-        personNameLabel.text = person.title
+        personNameLabel.text = person.firstName
+        
+        personMobileNumberLabel.text = "\(person.mobile)"
     }
-    
+
 }

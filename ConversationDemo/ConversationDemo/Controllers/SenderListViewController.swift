@@ -42,6 +42,7 @@ class SenderListViewController: PersonListBaseViewController {
             if let controller = segue.destination as? PersonListTableViewController {
                 controller.personListModel = PersonListModel()
                 controller.personSelectionDelegate = self
+                personListTableViewController = controller
             }
         }
     }

@@ -20,7 +20,7 @@ class ConversationListTableViewCell: UITableViewCell {
     }
 
     func configure(with conversation: ConversationObject) {
-        conversationTitleLabel.text = "\(conversation.fromPerson.title) to \(conversation.toPerson.title)"
+        conversationTitleLabel.text = "\(conversation.fromPerson.firstName) to \(conversation.toPerson.firstName)"
     }
 
 }

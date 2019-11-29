@@ -11,8 +11,8 @@ import Foundation
 public typealias ConversationObject = (fromPerson: PersonProtocol, toPerson: PersonProtocol)
 
 public protocol PersonProtocol {
-    var title: String { get }
-    var number: Int { get }
+    var firstName: String { get }
+    var mobile: Int { get }
 }
 
 enum Conversation: Int {
@@ -45,21 +45,21 @@ class ConversationListModel {
 
 // MARK: Stub Implementations
 class John: PersonProtocol {
-    var title: String {
+    var firstName: String {
         return "John"
     }
 
-    var number: Int {
+    var mobile: Int {
         return 123456789
     }
 }
 
 class Maria: PersonProtocol {
-    var title: String {
+    var firstName: String {
         return "Maria"
     }
 
-    var number: Int {
+    var mobile: Int {
         return 9876543210
     }
 }

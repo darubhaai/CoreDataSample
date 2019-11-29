@@ -21,19 +21,31 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kps-uA-ENl" userLabel="Title Container">
                         <rect key="frame" x="5" y="5" width="433" height="212"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fhO-t4-ijL">
-                                <rect key="frame" x="20" y="25" width="38.5" height="162"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
-                                <color key="textColor" name="Conversation List Title Color"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="opH-uf-Ult">
+                                <rect key="frame" x="20" y="82" width="393" height="48"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fhO-t4-ijL">
+                                        <rect key="frame" x="0.0" y="0.0" width="38.5" height="21.5"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                        <color key="textColor" name="Conversation List Title Color"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ekF-jV-S8m">
+                                        <rect key="frame" x="0.0" y="33.5" width="31" height="14.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
                         </subviews>
-                        <color key="backgroundColor" name="Conversation List Cell Color"/>
+                        <color key="backgroundColor" name="Person List Cell Color"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="fhO-t4-ijL" secondAttribute="bottom" constant="25" id="cEU-Wn-ehB"/>
-                            <constraint firstItem="fhO-t4-ijL" firstAttribute="width" relation="lessThanOrEqual" secondItem="kps-uA-ENl" secondAttribute="width" multiplier="0.85" id="n5l-fd-kkV"/>
-                            <constraint firstItem="fhO-t4-ijL" firstAttribute="leading" secondItem="kps-uA-ENl" secondAttribute="leading" constant="20" id="nAa-vD-8Of"/>
-                            <constraint firstItem="fhO-t4-ijL" firstAttribute="top" secondItem="kps-uA-ENl" secondAttribute="top" constant="25" id="pA2-Nu-RGo"/>
+                            <constraint firstItem="opH-uf-Ult" firstAttribute="centerY" secondItem="kps-uA-ENl" secondAttribute="centerY" id="29B-zp-dbf"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="opH-uf-Ult" secondAttribute="bottom" constant="20" id="8jW-ao-OSe"/>
+                            <constraint firstItem="opH-uf-Ult" firstAttribute="top" relation="greaterThanOrEqual" secondItem="kps-uA-ENl" secondAttribute="top" constant="20" id="9fd-ww-gQF"/>
+                            <constraint firstItem="opH-uf-Ult" firstAttribute="leading" secondItem="kps-uA-ENl" secondAttribute="leading" constant="20" id="Hoy-cG-ADI"/>
+                            <constraint firstAttribute="trailing" secondItem="opH-uf-Ult" secondAttribute="trailing" constant="20" id="WnQ-os-j9x"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -53,17 +65,18 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="personMobileNumberLabel" destination="ekF-jV-S8m" id="2O7-Ae-vMl"/>
                 <outlet property="personNameLabel" destination="fhO-t4-ijL" id="uLV-hR-rbI"/>
             </connections>
             <point key="canvasLocation" x="130" y="115"/>
         </tableViewCell>
     </objects>
     <resources>
-        <namedColor name="Conversation List Cell Color">
-            <color red="0.72600001096725464" green="0.54000002145767212" blue="0.017999999225139618" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
         <namedColor name="Conversation List Title Color">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Person List Cell Color">
+            <color red="0.72600001096725464" green="0.54000002145767212" blue="0.017999999225139618" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

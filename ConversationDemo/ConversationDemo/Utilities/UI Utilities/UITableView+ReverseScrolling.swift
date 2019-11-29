@@ -11,7 +11,7 @@ import UIKit
 
 extension UITableView {
     func configureForReverseScrolling() {
-        self.transform = CGAffineTransform(scaleX: 1, y: -1)
+        self.transform = CGAffineTransform(scaleX: 1, y: -1)    
     }
 }
 

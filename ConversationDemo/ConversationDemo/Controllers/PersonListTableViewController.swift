@@ -27,8 +27,13 @@ class PersonListTableViewController: UITableViewController, PersonAdditionDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
-        self.clearsSelectionOnViewWillAppear = false
-        
+    }
+
+    // MARK: -
+    // MARK: Public Methods
+    // MARK: -
+    func reloadData() {
+        tableView.reloadData()
     }
 
     // MARK: -
@@ -72,7 +77,7 @@ class PersonListTableViewController: UITableViewController, PersonAdditionDelega
     func didRequestToAddPerson(_ person: PersonProtocol) {
         personListModel.addPerson(person)
         let insertionIndexPath = IndexPath(row: personListModel.lastItemIndex, section: 0)
-        tableView.insertRows(at: [insertionIndexPath], with: .bottom)
+        tableView.insertRows(at: [insertionIndexPath], with: .fade)
         tableView.scrollToRow(at: insertionIndexPath, at: .middle, animated: true)
     }
 

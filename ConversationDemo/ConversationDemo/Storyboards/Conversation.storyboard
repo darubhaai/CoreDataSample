@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="MRh-cY-dhr">
     <device id="retina6_1" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -9,84 +9,6 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Conversation List View Controller-->
-        <scene sceneID="T4w-Ne-kiK">
-            <objects>
-                <viewController storyboardIdentifier="ConversationListViewController" id="1GE-t9-Smv" customClass="ConversationListViewController" customModule="ConversationDemo" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="y56-7E-tje">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="m53-wO-4ns">
-                                <rect key="frame" x="0.0" y="44" width="414" height="825"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ConversationListTableViewCell" id="Wam-ZJ-cKu" customClass="ConversationListTableViewCell" customModule="ConversationDemo" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="86.5"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Wam-ZJ-cKu" id="8DQ-h4-yJC">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="86.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hS2-4K-rif" userLabel="Title Container">
-                                                    <rect key="frame" x="41.5" y="5" width="331" height="76.5"/>
-                                                    <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XGy-iP-pIo">
-                                                            <rect key="frame" x="142.5" y="25" width="46" height="26.5"/>
-                                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
-                                                            <color key="textColor" name="Conversation List Title Color"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                    </subviews>
-                                                    <color key="backgroundColor" name="Conversation List Cell Color"/>
-                                                    <constraints>
-                                                        <constraint firstItem="XGy-iP-pIo" firstAttribute="top" secondItem="hS2-4K-rif" secondAttribute="top" constant="25" id="1NY-Hc-FbW"/>
-                                                        <constraint firstItem="XGy-iP-pIo" firstAttribute="centerX" secondItem="hS2-4K-rif" secondAttribute="centerX" id="WVh-Rp-GdZ"/>
-                                                        <constraint firstAttribute="bottom" secondItem="XGy-iP-pIo" secondAttribute="bottom" constant="25" id="yeL-iu-mQ9"/>
-                                                    </constraints>
-                                                    <userDefinedRuntimeAttributes>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                            <integer key="value" value="12"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                    </userDefinedRuntimeAttributes>
-                                                </view>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="hS2-4K-rif" firstAttribute="centerX" secondItem="8DQ-h4-yJC" secondAttribute="centerX" id="8aK-he-jSX"/>
-                                                <constraint firstAttribute="bottom" secondItem="hS2-4K-rif" secondAttribute="bottom" constant="5" id="EcV-s9-bBE"/>
-                                                <constraint firstItem="hS2-4K-rif" firstAttribute="width" secondItem="8DQ-h4-yJC" secondAttribute="width" multiplier="0.8" id="ZHz-tE-5ew"/>
-                                                <constraint firstItem="hS2-4K-rif" firstAttribute="top" secondItem="8DQ-h4-yJC" secondAttribute="top" constant="5" id="rld-K2-Xxo"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <connections>
-                                            <outlet property="conversationTitleLabel" destination="XGy-iP-pIo" id="UJo-b8-cCP"/>
-                                        </connections>
-                                    </tableViewCell>
-                                </prototypes>
-                                <connections>
-                                    <outlet property="dataSource" destination="1GE-t9-Smv" id="euO-D0-EHx"/>
-                                    <outlet property="delegate" destination="1GE-t9-Smv" id="v29-2s-qBY"/>
-                                </connections>
-                            </tableView>
-                        </subviews>
-                        <color key="backgroundColor" name="Conversation List Backgroud"/>
-                        <constraints>
-                            <constraint firstItem="m53-wO-4ns" firstAttribute="top" secondItem="6UQ-ZN-kBK" secondAttribute="top" id="Nhz-K8-9Bg"/>
-                            <constraint firstItem="m53-wO-4ns" firstAttribute="leading" secondItem="6UQ-ZN-kBK" secondAttribute="leading" id="anE-6L-z0r"/>
-                            <constraint firstItem="m53-wO-4ns" firstAttribute="bottom" secondItem="6UQ-ZN-kBK" secondAttribute="bottom" constant="7" id="cnq-Ne-8DC"/>
-                            <constraint firstItem="6UQ-ZN-kBK" firstAttribute="trailing" secondItem="m53-wO-4ns" secondAttribute="trailing" id="lWI-Bs-gbu"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="6UQ-ZN-kBK"/>
-                    </view>
-                    <connections>
-                        <outlet property="conversationListTableView" destination="m53-wO-4ns" id="8iC-VW-3xv"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="df7-RS-uK5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-278.26086956521743" y="279.91071428571428"/>
-        </scene>
         <!--Conversation View Controller-->
         <scene sceneID="kUF-Xd-aRN">
             <objects>
@@ -102,18 +24,18 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="BON-0W-xdG">
-                                <rect key="frame" x="0.0" y="84.5" width="414" height="627.5"/>
+                                <rect key="frame" x="0.0" y="94.5" width="414" height="617.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ConversationTableViewCell" id="uDB-lK-DRy" customClass="ConversationTableViewCell" customModule="ConversationDemo" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="70.5"/>
+                                        <rect key="frame" x="0.0" y="28" width="414" height="80.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="uDB-lK-DRy" id="Hpw-ll-wFP">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="70.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="80.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G1h-Ct-vPQ" userLabel="Bubble View">
-                                                    <rect key="frame" x="83" y="5" width="248" height="60.5"/>
+                                                    <rect key="frame" x="83" y="10" width="248" height="60.5"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oVs-ns-A8S">
                                                             <rect key="frame" x="10" y="10" width="42" height="20.5"/>
@@ -143,13 +65,26 @@
                                                         </userDefinedRuntimeAttribute>
                                                     </userDefinedRuntimeAttributes>
                                                 </view>
+                                                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eml-g1-wBl" userLabel="Selection overlay">
+                                                    <rect key="frame" x="10" y="5" width="394" height="70.5"/>
+                                                    <color key="backgroundColor" name="Message Selection Overlay Color"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                            <integer key="value" value="12"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                </view>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
-                                                <constraint firstItem="G1h-Ct-vPQ" firstAttribute="top" secondItem="Hpw-ll-wFP" secondAttribute="top" constant="5" id="8eG-6B-BoU"/>
-                                                <constraint firstAttribute="bottom" secondItem="G1h-Ct-vPQ" secondAttribute="bottom" constant="5" id="BIG-Tj-rt4"/>
+                                                <constraint firstItem="eml-g1-wBl" firstAttribute="leading" secondItem="Hpw-ll-wFP" secondAttribute="leading" constant="10" id="6k1-t0-mKo"/>
+                                                <constraint firstItem="G1h-Ct-vPQ" firstAttribute="top" secondItem="Hpw-ll-wFP" secondAttribute="top" constant="10" id="8eG-6B-BoU"/>
+                                                <constraint firstItem="G1h-Ct-vPQ" firstAttribute="top" secondItem="eml-g1-wBl" secondAttribute="top" constant="5" id="As8-6P-UZv"/>
+                                                <constraint firstAttribute="bottom" secondItem="G1h-Ct-vPQ" secondAttribute="bottom" constant="10" id="BIG-Tj-rt4"/>
                                                 <constraint firstItem="G1h-Ct-vPQ" firstAttribute="width" secondItem="Hpw-ll-wFP" secondAttribute="width" multiplier="0.6" id="DOa-J4-pyF"/>
+                                                <constraint firstAttribute="trailing" secondItem="eml-g1-wBl" secondAttribute="trailing" constant="10" id="NsM-do-rhA"/>
                                                 <constraint firstItem="G1h-Ct-vPQ" firstAttribute="centerX" secondItem="Hpw-ll-wFP" secondAttribute="centerX" id="RpK-qi-sHB"/>
+                                                <constraint firstItem="eml-g1-wBl" firstAttribute="bottom" secondItem="G1h-Ct-vPQ" secondAttribute="bottom" constant="5" id="gcC-Be-1iT"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -157,6 +92,7 @@
                                             <outlet property="bubbleView" destination="G1h-Ct-vPQ" id="Le5-6g-NEN"/>
                                             <outlet property="bubbleViewCenterXConstraint" destination="RpK-qi-sHB" id="Yyf-6Z-hVy"/>
                                             <outlet property="messageContentLabel" destination="oVs-ns-A8S" id="92z-Ll-7l5"/>
+                                            <outlet property="selectionOverlay" destination="eml-g1-wBl" id="zMN-48-5xv"/>
                                             <outlet property="timeStampLabel" destination="Pa3-Rv-xa3" id="nGx-QO-Qit"/>
                                         </connections>
                                     </tableViewCell>
@@ -203,7 +139,7 @@
                         </subviews>
                         <color key="backgroundColor" name="Conversation Background Color"/>
                         <constraints>
-                            <constraint firstItem="s1M-n6-qae" firstAttribute="bottom" secondItem="BON-0W-xdG" secondAttribute="top" id="9Ju-VV-G6D"/>
+                            <constraint firstItem="BON-0W-xdG" firstAttribute="top" secondItem="s1M-n6-qae" secondAttribute="bottom" constant="10" id="9Ju-VV-G6D"/>
                             <constraint firstItem="aWA-z8-4kR" firstAttribute="bottom" secondItem="CKk-8h-nBe" secondAttribute="bottom" constant="20" id="9hT-qC-GLh"/>
                             <constraint firstItem="CKk-8h-nBe" firstAttribute="top" secondItem="BON-0W-xdG" secondAttribute="bottom" constant="10" id="Nok-wH-LMI"/>
                             <constraint firstItem="BON-0W-xdG" firstAttribute="leading" secondItem="aWA-z8-4kR" secondAttribute="leading" id="O2x-E1-8Cl"/>
@@ -233,14 +169,8 @@
         <namedColor name="Conversation Background Color">
             <color red="0.8666666666666667" green="0.92941176470588238" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
-        <namedColor name="Conversation List Backgroud">
-            <color red="0.82352941176470584" green="0.93333333333333335" blue="0.26666666666666666" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="Conversation List Cell Color">
-            <color red="0.72600001096725464" green="0.54000002145767212" blue="0.017999999225139618" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="Conversation List Title Color">
-            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <namedColor name="Message Selection Overlay Color">
+            <color red="0.0" green="0.0" blue="0.80027168989181519" alpha="0.15038785135746002" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="Message Text Color">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

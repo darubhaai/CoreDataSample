@@ -28,4 +28,5 @@ extension CDMessage: MessageProtocol {
     public var dateCreated: Date {
         return creationDate ?? Date()
     }
+
 }

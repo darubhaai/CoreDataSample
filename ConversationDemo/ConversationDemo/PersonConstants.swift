@@ -37,23 +37,23 @@ enum PersonPropertyEntryValidationStatus {
         case .empty(let fieldType):
             switch fieldType {
             case .name:
-                return "Only alphabets are allowed"
+                return "Only alphabets and underscores are allowed"
             case .mobileNumber:
                 return "10 digit number"
             }
         case .invalid(let fieldType):
             switch fieldType {
             case .name:
-                return "Please enter a valid Name"
+                return "Please enter a valid Name!"
             case .mobileNumber:
-                return "Please enter a valid Mobile number"
+                return "Please enter a valid Mobile number!"
             }
         case .valid(let fieldType):
             switch fieldType {
             case .name:
                 return "Valid name entered"
             case .mobileNumber:
-                return "Valid number entered"
+                return "Valid mobile number entered"
             }
         }
     }

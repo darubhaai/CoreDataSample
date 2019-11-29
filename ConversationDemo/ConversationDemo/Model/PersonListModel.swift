@@ -8,7 +8,8 @@
 
 import Foundation
 
-class Communicator: PersonProtocol {
+
+class MessageParticipant: PersonProtocol {
 
     private let personNumber: Int
     private let personName: String
@@ -18,16 +19,19 @@ class Communicator: PersonProtocol {
         self.personNumber = number
     }
 
-    var title: String {
+    var firstName: String {
         return personName
     }
 
-    var number: Int {
+    var mobile: Int {
         return personNumber
     }
 
 }
 
+/**
+ ViewModel for PersonListViewController
+ */
 class PersonListModel {
 
     private let exludedPerson: PersonProtocol?
@@ -40,11 +44,11 @@ class PersonListModel {
 
     private func loadPersons() {
         if let exludedPerson = exludedPerson {
-            if let results = PersistantStorageManager.shared.fetchPersonList(byFiltering: exludedPerson) {
+            if let results = PersistentStorageManager.shared.fetchPersonList(byFiltering: exludedPerson) {
                 persons = results
             }
         } else {
-            if let results = PersistantStorageManager.shared.fetchPersonList() {
+            if let results = PersistentStorageManager.shared.fetchPersonList() {
                 persons = results
             }
         }
@@ -63,12 +67,12 @@ class PersonListModel {
     }
 
     func addPerson(_ person: PersonProtocol) {
-        PersistantStorageManager.shared.addPerson(person)
+        PersistentStorageManager.shared.addPerson(person)
         persons.append(person)
     }
 
     func deletePerson(atIndexPath indexPath: IndexPath) {
-        PersistantStorageManager.shared.deletePerson(persons[indexPath.row])
+        PersistentStorageManager.shared.deletePerson(persons[indexPath.row])
         persons.remove(at: indexPath.row)
     }
 }

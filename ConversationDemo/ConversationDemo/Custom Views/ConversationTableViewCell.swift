@@ -19,32 +19,31 @@ fileprivate let receiverBubbleColor = UIColor(named: "Receiver Bubble Color")!
 class ConversationTableViewCell: UITableViewCell {
 
     @IBOutlet weak var messageContentLabel: UILabel!
-
     @IBOutlet weak var timeStampLabel: UILabel!
     @IBOutlet weak var bubbleView: UIView!
     @IBOutlet weak var bubbleViewCenterXConstraint: NSLayoutConstraint!
-    
+    @IBOutlet weak var selectionOverlay: UIView!
+
     override func prepareForReuse() {
         super.prepareForReuse()
         bubbleViewCenterXConstraint?.constant = 0
+        bubbleView.backgroundColor = .clear
     }
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    func setShowSelectionOverlay(_ isShown: Bool) {
+        selectionOverlay.isHidden = !isShown
     }
 
-    func configureWith(message: MessageProtocol, position: BubblePosion) {
+    func configureWith(message: MessageProtocol, position: BubblePosion, isSelected: Bool) {
         selectionStyle = .none
         messageContentLabel.text = message.textMessage
         timeStampLabel.text = message.timeStampString
         configureBubble(forPosition: position)
+        selectionOverlay.isHidden = !isSelected
     }
 
     private func configureBubble(forPosition position: BubblePosion) {

@@ -11,22 +11,22 @@ import Foundation
 public extension NSCompoundPredicate {
     convenience init(forConversation conversation: ConversationObject) {
         let predicateSentBy = NSPredicate(format: "sender.mobileNumber == %@ AND receiver.mobileNumber == %@",
-                                          NSNumber(integerLiteral: conversation.fromPerson.number),
-                                          NSNumber(integerLiteral: conversation.toPerson.number))
+                                          NSNumber(integerLiteral: conversation.fromPerson.mobile),
+                                          NSNumber(integerLiteral: conversation.toPerson.mobile))
         let predicateReceivedBy = NSPredicate(format: "sender.mobileNumber == %@ AND receiver.mobileNumber == %@",
-                                              NSNumber(integerLiteral: conversation.toPerson.number),
-                                              NSNumber(integerLiteral: conversation.fromPerson.number))
+                                              NSNumber(integerLiteral: conversation.toPerson.mobile),
+                                              NSNumber(integerLiteral: conversation.fromPerson.mobile))
         self.init(orPredicateWithSubpredicates: [predicateSentBy, predicateReceivedBy])
     }
 }
 
 public extension NSPredicate {
-    convenience init(matching person: PersonProtocol) {
-        self.init(format: "mobileNumber == %@ AND name == %@", NSNumber(value: person.number), person.title)
+    convenience init(personWithNumber mobileNumber: Int) {
+        self.init(format: "mobileNumber == %@", NSNumber(value: mobileNumber))
     }
 
     convenience init(notMatching person: PersonProtocol) {
-        self.init(format: "mobileNumber != %@ AND name != %@", NSNumber(value: person.number), person.title)
+        self.init(format: "mobileNumber != %@", NSNumber(value: person.mobile), person.firstName)
     }
 
     convenience init(matching message: MessageProtocol) {

@@ -8,8 +8,9 @@
 
 import Foundation
 import CoreData
+import UIKit
 
-class PersistantStorageManager {
+class PersistentStorageManager {
     private struct Keys {
         static let name = "name"
         static let mobileNumber = "mobileNumber"
@@ -22,10 +23,16 @@ class PersistantStorageManager {
         static let personEntity = "CDPerson"
     }
 
-    static let shared = PersistantStorageManager()
+    static let shared = PersistentStorageManager()
 
     private init() {
-        
+        addObservers()
+    }
+
+    private func addObservers() {
+        NotificationCenter.default.addObserver(forName:  UIApplication.willResignActiveNotification, object: nil, queue: .main) { (notification) in
+            PersistentStorageManager.shared.saveChanges()
+        }
     }
 
     // MARK: - Core Data stack
@@ -99,7 +106,7 @@ class PersistantStorageManager {
     private func person(forObject personObject: PersonProtocol) -> CDPerson {
         var person: CDPerson!
         let personFetchRequest: NSFetchRequest<CDPerson> = CDPerson.fetchRequest()
-        personFetchRequest.predicate = NSPredicate(matching: personObject)
+        personFetchRequest.predicate = NSPredicate(personWithNumber: personObject.mobile)
         do {
             let personResult = try managedObjectContext.fetch(personFetchRequest).first
             person = personResult
@@ -111,8 +118,8 @@ class PersistantStorageManager {
         if person == nil {
             let personEntity = NSEntityDescription.entity(forEntityName: Keys.personEntity, in: managedObjectContext)!
             let personManagedObject = NSManagedObject(entity: personEntity, insertInto: managedObjectContext) as! CDPerson
-            personManagedObject.setValue(personObject.title, forKey: Keys.name)
-            personManagedObject.setValue(personObject.number, forKey: Keys.mobileNumber)
+            personManagedObject.setValue(personObject.firstName, forKey: Keys.name)
+            personManagedObject.setValue(personObject.mobile, forKey: Keys.mobileNumber)
             person = personManagedObject
         }
 
@@ -129,6 +136,7 @@ class PersistantStorageManager {
         message.setValue(messageObject.textMessage, forKey: Keys.content)
         message.setValue(Date(), forKey: Keys.creationDate)
         message.setValue(messageObject.timeStampString, forKey: Keys.timeStamp)
+        saveChanges()
     }
 
     func deleteMessage(_ messageObject: MessageProtocol) {
@@ -145,18 +153,32 @@ class PersistantStorageManager {
         }
     }
 
+    func hasPerson(withNumber mobileNumber: Int) -> Bool {
+        var hasPerson = false
+        let personFetchRequest: NSFetchRequest<CDPerson> = CDPerson.fetchRequest()
+        personFetchRequest.predicate = NSPredicate(personWithNumber: mobileNumber)
+        do {
+            let personResult = try managedObjectContext.fetch(personFetchRequest)
+            hasPerson = !personResult.isEmpty
+        }
+        catch {
+            debugPrint("Failed to fetch Person with Mobile number: \(mobileNumber)")
+        }
+        return hasPerson
+    }
+
     func addPerson(_ person: PersonProtocol)  {
         guard let personEntity = NSEntityDescription.entity(forEntityName: Keys.personEntity, in: managedObjectContext) else { return }
         let personObject = NSManagedObject(entity: personEntity, insertInto: managedObjectContext)
 
-        personObject.setValue(person.title, forKey: Keys.name)
-        personObject.setValue(person.number, forKey: Keys.mobileNumber)
+        personObject.setValue(person.firstName, forKey: Keys.name)
+        personObject.setValue(person.mobile, forKey: Keys.mobileNumber)
         saveChanges()
     }
 
     func deletePerson(_ person: PersonProtocol) {
         let fetchRequest = NSFetchRequest<CDPerson>(entityName: Keys.personEntity)
-        fetchRequest.predicate = NSPredicate(matching: person)
+        fetchRequest.predicate = NSPredicate(personWithNumber: person.mobile)
         do {
             let persons = try managedObjectContext.fetch(fetchRequest)
             if let deletionObject = persons.first {

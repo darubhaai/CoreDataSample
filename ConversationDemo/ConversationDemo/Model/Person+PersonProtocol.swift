@@ -9,11 +9,11 @@
 import Foundation
 
 extension CDPerson: PersonProtocol {
-    public var number: Int {
+    public var mobile: Int {
         return Int(mobileNumber)
     }
 
-    public var title: String {
+    public var firstName: String {
         return name ?? ""
     }
 }

@@ -12,16 +12,21 @@ protocol PersonAdditionDelegate: class {
     func didRequestToAddPerson(_ person: PersonProtocol)
 }
 
+extension String {
+    static let duplicateNumberAlertTitle = "Mobile number exists!"
+    static let duplicateNumberAlertMessage = "You already have a person with entered mobile number. Please add a different number"
+}
+
 class PersonAdditionViewController: UIViewController {
 
     // MARK: -
     // MARK: Outlets
     // MARK: -
-    @IBOutlet weak var nameEntryTextField: UITextField!
-    @IBOutlet weak var numberEntryTextField: UITextField!
-    @IBOutlet weak var additionButton: UIButton!
-    @IBOutlet weak var nameValidationLabel: UILabel!
-    @IBOutlet weak var numberValidationLabel: UILabel!
+    @IBOutlet weak var personNameTextField: UITextField!
+    @IBOutlet weak var mobileNumberTextField: UITextField!
+    @IBOutlet weak var addButton: UIButton!
+    @IBOutlet weak var personNameValidationLabel: UILabel!
+    @IBOutlet weak var mobileNumberValidationLabel: UILabel!
 
     // MARK: -
     // MARK: Properties
@@ -47,8 +52,8 @@ class PersonAdditionViewController: UIViewController {
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        nameEntryTextField?.resignFirstResponder()
-        numberEntryTextField?.resignFirstResponder()
+        personNameTextField?.resignFirstResponder()
+        mobileNumberTextField?.resignFirstResponder()
     }
 
     // MARK: -
@@ -56,7 +61,7 @@ class PersonAdditionViewController: UIViewController {
     // MARK: -
     private var isNameValid: Bool {
         var isValid = false
-        guard let name = nameEntryTextField.text else {
+        guard let name = personNameTextField.text else {
             return isValid
         }
         if !name.isEmpty {
@@ -72,9 +77,9 @@ class PersonAdditionViewController: UIViewController {
         return isValid
     }
 
-    private var isNumberValid: Bool {
+    private var isMobileNumberValid: Bool {
         var isValid = false
-        guard let number = numberEntryTextField.text else {
+        guard let number = mobileNumberTextField.text else {
             return isValid
         }
         if !number.isEmpty {
@@ -91,36 +96,48 @@ class PersonAdditionViewController: UIViewController {
     }
 
     private func setNumberValidation(status: PersonPropertyEntryValidationStatus) {
-        numberValidationLabel.text = status.validationText
-        numberValidationLabel.textColor = status.color
+        mobileNumberValidationLabel.text = status.validationText
+        mobileNumberValidationLabel.textColor = status.color
     }
 
     private func setNameValidation(status: PersonPropertyEntryValidationStatus) {
-        nameValidationLabel.text = status.validationText
-        nameValidationLabel.textColor = status.color
+        personNameValidationLabel.text = status.validationText
+        personNameValidationLabel.textColor = status.color
     }
 
     private func configureTextFields() {
-        nameEntryTextField.delegate = self
-        numberEntryTextField.delegate = self
+        personNameTextField.delegate = self
+        mobileNumberTextField.delegate = self
         setNumberValidation(status: .empty(forFieldType: .mobileNumber))
         setNameValidation(status: .empty(forFieldType: .name))
-        nameEntryTextField.addTarget(self, action: .textFieldValueChanged, for: .editingChanged)
+        personNameTextField.addTarget(self, action: .textFieldValueChanged, for: .editingChanged)
+        mobileNumberTextField.addTarget(self, action: .textFieldValueChanged, for: .editingChanged)
     }
 
     private func validateTextFields() {
         let isValidNameEntered = isNameValid
-        let isValidMobileNumbereEntered = isNumberValid
-        additionButton.isEnabled = isValidNameEntered && isValidMobileNumbereEntered
+        let isValidMobileNumbereEntered = isMobileNumberValid
+        addButton.isEnabled = isValidNameEntered && isValidMobileNumbereEntered
+    }
+
+    private func showDuplicateMobileNumberAlert() {
+        let alertController = UIAlertController(title: .duplicateNumberAlertTitle, message: .duplicateNumberAlertMessage, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
     }
 
     // MARK: -
     // MARK: IBActions
     // MARK: -
     @IBAction func additionButtonTapped(_ sender: Any) {
-        let person = Communicator(name: nameEntryTextField.text!, number: Int(numberEntryTextField.text!)!)
-        dismiss(animated: true) { [weak self] in
-            self?.additionDelegate?.didRequestToAddPerson(person)
+        let person = MessageParticipant(name: personNameTextField.text!, number: Int(mobileNumberTextField.text!)!)
+        if PersistentStorageManager.shared.hasPerson(withNumber: person.mobile) {
+            showDuplicateMobileNumberAlert()
+        } else {
+            dismiss(animated: true) { [weak self] in
+                self?.additionDelegate?.didRequestToAddPerson(person)
+            }
         }
     }
 
@@ -129,14 +146,16 @@ class PersonAdditionViewController: UIViewController {
     }
 }
 
+// MARK: -
 // MARK: UITextFieldDelegate
+// MARK: -
 extension PersonAdditionViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         validateTextFields()
     }
 
     @objc fileprivate func textFieldValueChanged() {
-//        validateTextFields()
+        validateTextFields()
     }
 }
 

@@ -11,7 +11,7 @@ import UIKit
 typealias PersonListController = UIViewController & PersonSelectionDelegate
 
 class PersonListBaseViewController: PersonListController {
-
+    var personListTableViewController: PersonListTableViewController?
     class func instantiate() -> PersonListBaseViewController {
         let personListController: PersonListBaseViewController = Storyboards.Home.instantiate(identifier: "PersonListViewController")
         return personListController
@@ -20,6 +20,11 @@ class PersonListBaseViewController: PersonListController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loadPersons()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        personListTableViewController?.reloadData()
     }
 
     // Subclassess must overide this method

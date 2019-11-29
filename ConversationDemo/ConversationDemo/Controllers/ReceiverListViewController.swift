@@ -47,6 +47,7 @@ class ReceiverListViewController: PersonListBaseViewController {
             if let controller = segue.destination as? PersonListTableViewController {
                 controller.personListModel = PersonListModel(filteredBy: self.sender)
                 controller.personSelectionDelegate = self
+                personListTableViewController = controller
             }
         }
     }
@@ -55,6 +56,6 @@ class ReceiverListViewController: PersonListBaseViewController {
     // MARK: Private methods
     // MARK: -
     private func setupStrings() {
-        titleLabel.text = "Choose a person\nto receive messages from\n\(sender.title)"
+        titleLabel.text = "Choose a person to whom\n\(sender.firstName)\nwill be sending messages"
     }
 }
